@@ -1,77 +1,77 @@
- Reuters Financial News Analysis
+# Financial News Analysis Project
 
 ## Project Overview
-This project analyzes Reuters financial news headlines to extract insights about companies, perform sentiment analysis, and retrieve financial data. The analysis is structured into three main tasks, each focusing on different aspects of financial news analysis.
+This project analyzes Reuters financial news headlines to extract insights about companies, perform sentiment analysis, and analyze financial data. The project is structured into multiple tasks, each focusing on different aspects of financial news and market analysis.
 
 ## Tasks
 
-### Task 1: Exploratory Data Analysis (EDA)
+### Task 1: News Headlines Analysis
 📊 **Purpose**: Comprehensive analysis of Reuters headlines dataset
-
-**Features**:
-- Dataset statistics and quality assessment
 - Text pattern analysis and word frequencies
 - Temporal trend visualization
 - Word cloud generation
-- Sentiment analysis of headlines and descriptions
+- Basic statistics and visualizations
 
-**Key Components** (`src/eda.py`):
-- `ReutersEDA` class: Handles data preparation, analysis, and visualization
-- `prepare_data()`: Prepares data for analysis
-- `analyze_data()`: Performs EDA tasks
-- `visualize_data()`: Generates visualizations
-
-### Task 2: Stock Ticker Extraction
-💹 **Purpose**: Identify and map company mentions to stock tickers
-
-**Features**:
-- Automatic company name detection
-- Stock ticker mapping
+### Task 2: Stock Extraction and Analysis
+💹 **Purpose**: Identify company mentions and analyze stock data
+- Company name detection in headlines
+- Stock ticker mapping and validation
 - Mention frequency analysis
-- News article association
+- Stock data correlation with news
 
-**Key Components** (`src/stock_extraction.py`):
-- `extract_tickers()`: Extracts stock tickers from headlines
-- `validate_tickers()`: Validates extracted tickers
-
-### Task 3: Financial Data Retrieval
-📈 **Purpose**: Analyze financial data for mentioned stocks
-
-**Features**:
-- Historical price data retrieval
-- Key financial metrics analysis
-- Return calculations
+### Task 3: Financial Analysis
+📈 **Purpose**: Detailed financial data analysis
+- Historical price data analysis
+- Key financial metrics computation
 - Performance visualization
+- Market trend analysis
 
-**Key Components** (`src/financial_analysis.py`):
-```python
-class FinancialAnalyzer:
-    def get_financial_metrics() # Get key stock metrics
-    def get_historical_data()   # Retrieve price history
-    def calculate_returns()     # Compute return metrics
-```
+### Task 4: Time Series Forecasting
+📊 **Purpose**: Predict stock movements
+- Time series analysis of stock prices
+- Forecasting models implementation
+- Performance evaluation
+- Trend prediction
+
+### Task 5: News Impact Analysis
+📰 **Purpose**: Analyze news sentiment impact
+- Sentiment analysis of headlines
+- News impact on stock prices
+- Correlation studies
+- Market reaction analysis
 
 ## Project Structure
-
 ```
-reuters-financial-analysis/
+project/
 ├── src/
-│   ├── eda.py                 # EDA implementation
-│   ├── sentiment_analysis.py  # Sentiment analysis
-│   ├── stock_extraction.py    # Stock ticker extraction
-│   └── financial_analysis.py  # Financial data analysis
-├── utils/
-│   └── helpers.py            # Helper functions
-└── data/
-    └── reuters_headlines.csv # Dataset
+│   ├── __init__.py
+│   ├── stock_extraction.py
+│   ├── financial_analysis.py
+│   ├── sentiment_analysis.py
+│   └── news_impact_analyzer.py
+├── app/
+│   └── streamlit_app.py
+├── notebooks/
+│   ├── Task1_Analysis.ipynb
+│   ├── Task2_Stock_Extraction.ipynb
+│   ├── Task3_Financial_Analysis.ipynb
+│   ├── Task4-TimeSeries_Forecasting.ipynb
+│   └── Task5_News_Impact.ipynb
+├── results/
+│   └── task_1/
+│       ├── headlines_per_day.png
+│       ├── headline_word_freq.png
+│       └── headline_length_dist.png
+├── requirements.txt
+└── README.md
 ```
 
 ## Installation
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/YOUR_USERNAME/reuters-financial-analysis.git
-cd reuters-financial-analysis
+git clone https://github.com/YOUR_USERNAME/financial-news-analysis.git
+cd financial-news-analysis
 ```
 
 2. Create and activate virtual environment:
@@ -83,62 +83,22 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 3. Install dependencies:
 ```bash
 pip install -r requirements.txt
-python -m spacy download en_core_web_sm
 ```
 
-## Usage Examples
+## Usage
 
-### 1. Exploratory Data Analysis
-```python
-from src.eda import ReutersEDA
+### Running the Notebooks
+Each task is implemented as a separate Jupyter notebook in the `notebooks/` directory. Open and run them sequentially:
 
-# Initialize analyzer
-eda = ReutersEDA(df)
-
-# Get basic statistics
-stats = eda.get_basic_stats()
-
-# Generate word cloud
-wordcloud = eda.generate_wordcloud()
+```bash
+jupyter notebook notebooks/
 ```
 
-### 2. Stock Ticker Extraction
-```python
-from src.stock_extraction import StockExtractor
+### Running the Streamlit App
+The project includes a Streamlit web application for interactive analysis:
 
-# Initialize extractor
-extractor = StockExtractor(df)
-
-# Get all stock mentions
-mentions = extractor.get_all_stock_mentions()
-```
-
-### 3. Financial Analysis
-```python
-from src.financial_analysis import FinancialAnalyzer
-
-# Initialize analyzer
-analyzer = FinancialAnalyzer()
-
-# Get stock metrics
-metrics, _ = analyzer.get_financial_metrics('AAPL')
-
-# Get historical data
-hist_data, _ = analyzer.get_historical_data('AAPL', '1y')
-```
-
-## Dependencies
-```
-pandas==1.5.3
-streamlit==1.22.0
-nltk==3.8.1
-textblob==0.17.1
-yfinance==0.2.18
-plotly==5.14.1
-wordcloud==1.9.2
-spacy==3.5.2
-seaborn==0.12.2
-matplotlib==3.7.1
+```bash
+streamlit run app/streamlit_app.py
 ```
 
 ## Contributing
@@ -150,6 +110,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Acknowledgments
 - Reuters for the financial news dataset
 - Yahoo Finance for financial data
-- NLTK and spaCy for NLP capabilities
+- Libraries: pandas, numpy, scikit-learn, NLTK, spaCy, Streamlit
 ```
 

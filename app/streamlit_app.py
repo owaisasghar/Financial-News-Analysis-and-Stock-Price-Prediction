@@ -38,7 +38,7 @@ def load_spacy():
 # Load and process data
 @st.cache_data
 def load_data():
-    df = pd.read_csv('reuters_headlines.csv')
+    df = pd.read_csv('data/reuters_headlines.csv')
     df['Time'] = pd.to_datetime(df['Time'], format='%b %d %Y')
     return df
 

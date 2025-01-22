@@ -5,7 +5,7 @@ This module handles extraction of stock tickers and company names from news arti
 
 import re
 from utils.helpers import get_stock_mapping
-
+import pandas as pd
 class StockExtractor:
     def __init__(self, df):
         self.df = df
