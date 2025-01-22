@@ -16,6 +16,18 @@ import numpy as np
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import plotly.express as px
+import sys
+import os
+import warnings
+
+# Suppress PyTorch warnings
+warnings.filterwarnings('ignore', message='.*torch.classes.*')
+
+# Add the project root directory to Python path
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(0, project_root)
+
+from src.news_impact_analyzer import NewsImpactAnalyzer
 
 # Download required NLTK data
 @st.cache_resource
@@ -38,7 +50,9 @@ def load_spacy():
 # Load and process data
 @st.cache_data
 def load_data():
-    df = pd.read_csv('data/reuters_headlines.csv')
+    # Use the project root to get the correct path
+    data_path = os.path.join(project_root, 'data', 'reuters_headlines.csv')
+    df = pd.read_csv(data_path)
     df['Time'] = pd.to_datetime(df['Time'], format='%b %d %Y')
     return df
 
@@ -183,6 +197,7 @@ def main():
             "Task 1: Exploratory Data Analysis (EDA)",
             "Task 2: Stock Ticker Extraction",
             "Task 3: Financial Data Retrieval",
+            "Task 5: News Impact Analysis"
         ]
     )
 
@@ -516,6 +531,113 @@ def main():
         else:
             st.warning("No stock mentions found in the dataset")
 
+    elif analysis_type == "Task 5: News Impact Analysis":
+        st.header("Task 5: News Impact Analysis")
+        
+        # Get stock mentions first
+        company_to_ticker = get_stock_mapping()
+        stock_mentions = []
+        
+        for idx, row in df.iterrows():
+            headline_tickers, headline_companies = extract_stock_info(row['Headlines'], company_to_ticker)
+            desc_tickers, desc_companies = extract_stock_info(row['Description'], company_to_ticker)
+            all_tickers = set(headline_tickers + [comp[1] for comp in headline_companies] +
+                            desc_tickers + [comp[1] for comp in desc_companies])
+            if all_tickers:
+                for ticker in all_tickers:
+                    stock_mentions.append({
+                        'Date': row['Time'],
+                        'Ticker': ticker,
+                        'Headlines': row['Headlines'],
+                        'Description': row['Description']
+                    })
+        
+        if stock_mentions:
+            mentions_df = pd.DataFrame(stock_mentions)
+            unique_tickers = sorted(mentions_df['Ticker'].unique())
+            
+            # Select stock for analysis
+            selected_ticker = st.selectbox(
+                "Select a stock for impact analysis",
+                options=unique_tickers
+            )
+            
+            if selected_ticker:
+                # Filter news for selected stock
+                stock_news = mentions_df[mentions_df['Ticker'] == selected_ticker]
+                
+                # Initialize analyzer
+                analyzer = NewsImpactAnalyzer(stock_news, selected_ticker)
+                
+                # Perform comprehensive analysis
+                with st.spinner(f'Analyzing news impact for {selected_ticker}...'):
+                    results = analyzer.analyze_comprehensive_impact(window_days=5)
+                
+                if results and 'summary' in results:
+                    # Create tabs for different aspects of analysis
+                    impact_tab1, impact_tab2, impact_tab3 = st.tabs([
+                        "Key Findings & Recommendations",
+                        "Detailed Analysis",
+                        "Visualizations"
+                    ])
+                    
+                    with impact_tab1:
+                        st.subheader("Key Findings")
+                        for finding in results['summary']['key_findings']:
+                            st.write(f"• {finding}")
+                        
+                        st.subheader("Risk Factors")
+                        for risk in results['summary']['risk_factors']:
+                            st.write(f"• {risk}")
+                        
+                        st.subheader("Confidence Assessment")
+                        for metric in results['summary']['confidence_assessment']:
+                            st.write(f"• {metric}")
+                        
+                        st.subheader("Recommendations")
+                        for rec in results['summary']['recommendations']:
+                            st.write(f"• {rec}")
+                    
+                    with impact_tab2:
+                        st.subheader("Correlation Analysis")
+                        if 'base_analysis' in results and 'correlations' in results['base_analysis']:
+                            correlations = results['base_analysis']['correlations']
+                            st.write("Sentiment-Price Correlations:")
+                            for key, value in correlations.items():
+                                st.metric(
+                                    key.replace('_', ' ').title(),
+                                    f"{value:.3f}"
+                                )
+                        
+                        if 'topic_impact' in results:
+                            st.subheader("Topic Analysis")
+                            topic_df = pd.DataFrame.from_dict(
+                                results['topic_impact'],
+                                orient='index'
+                            )
+                            st.dataframe(topic_df)
+                        
+                        if 'volume_impact' in results and results['volume_impact']:
+                            st.subheader("Volume Impact")
+                            for key, value in results['volume_impact'].items():
+                                st.metric(
+                                    key.replace('_', ' ').title(),
+                                    f"{value:.3f}" if isinstance(value, float) else value
+                                )
+                    
+                    with impact_tab3:
+                        st.subheader("Impact Visualizations")
+                        figures = analyzer.visualize_impact_analysis()
+                        if figures:
+                            for name, fig in figures.items():
+                                st.plotly_chart(fig, use_container_width=True)
+                        else:
+                            st.warning("No visualizations could be generated")
+                else:
+                    st.error("Could not generate analysis results")
+        else:
+            st.warning("No stock mentions found in the dataset")
+
     # Add task descriptions in sidebar
     st.sidebar.markdown("""
     ### Task Descriptions
@@ -535,6 +657,12 @@ def main():
     - Key financial metrics
     - Historical price data
     - Return analysis
+    
+    **Task 5: News Impact Analysis**
+    - Sentiment vs stock price correlation
+    - Topic-based impact analysis
+    - News volume effects
+    - Confidence metrics
     """)
 
 if __name__ == "__main__":

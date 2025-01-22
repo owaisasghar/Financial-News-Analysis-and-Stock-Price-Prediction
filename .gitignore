@@ -22,10 +22,10 @@ wheels/
 
 # Virtual Environment
 venv/
-env/
 ENV/
+env/
 
-# IDEs
+# IDE
 .idea/
 .vscode/
 *.swp
@@ -33,7 +33,13 @@ ENV/
 
 # Jupyter Notebook
 .ipynb_checkpoints
-*.ipynb_checkpoints/
+
+# Streamlit
+.streamlit/
+
+# OS
+.DS_Store
+Thumbs.db
 
 # Environment variables
 .env
@@ -58,8 +64,8 @@ coverage.xml
 *.cover
 .hypothesis/
 
-# Streamlit
-.streamlit/
+# Documentation
+README.md
 
 # Misc
 .DS_Store 
