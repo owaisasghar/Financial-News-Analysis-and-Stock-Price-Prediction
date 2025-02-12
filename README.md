@@ -107,7 +107,6 @@ View the complete end-to-end analysis in `main.ipynb`, which integrates all task
 Access our interactive Streamlit dashboard at http://localhost:8501 after running:
 ```bash
 streamlit run app/streamlit_app.py
-**https://resolved-merry-crappie.ngrok-free.app/**
 ```
 
 The dashboard provides:
@@ -168,7 +167,6 @@ python src/main.py
 ```bash
 # Launch dashboard
 streamlit run app/streamlit_app.py
-Use this link to test the webapp: https://resolved-merry-crappie.ngrok-free.app/
 ```
 
 ## Key Dependencies
@@ -222,7 +220,7 @@ For detailed API documentation, refer to individual module docstrings.
 
 ## Interactive Visualization Dashboard
 
-Access the interactive dashboard at: http://localhost:8501 (after running Streamlit) **or** https://resolved-merry-crappie.ngrok-free.app/
+Access the interactive dashboard at: http://localhost:8501 (after running Streamlit) 
 
 ### Dashboard Features
 1. **News Analysis**
